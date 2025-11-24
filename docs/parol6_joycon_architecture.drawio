@@ -1,0 +1,292 @@
+<mxfile host="app.diagrams.net" modified="2025-11-20T00:00:00.000Z" agent="Claude Code" etag="v1.0" version="24.0.0" type="device">
+  <diagram name="Parol6-Joycon Architecture" id="architecture">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Background -->
+        <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry width="1600" height="1200" as="geometry" />
+        </mxCell>
+
+        <!-- Title -->
+        <mxCell id="title" value="Parol6 ROS2 MoveIt + Joycon 数据采集系统架构" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Layer 1: Hardware Input Layer -->
+        <mxCell id="layer1_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="300" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="layer1_title" value="硬件输入层" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#0d47a1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="110" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Joy-Con Hardware -->
+        <mxCell id="joycon_hw" value="&lt;b&gt;Nintendo Joy-Con&lt;/b&gt;&lt;br&gt;&lt;br&gt;📡 蓝牙连接&lt;br&gt;⚙️ 6轴IMU (陀螺仪+加速度计)&lt;br&gt;🎮 14个按键 + 1个摇杆&lt;br&gt;📊 更新率: ~100Hz&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;连接: L/R 按键自动重连&lt;br&gt;校准: Home键长按3秒&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e88e5;strokeColor=#0d47a1;strokeWidth=2;fontColor=#ffffff;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="150" width="260" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Layer 2: Pose Solver Layer -->
+        <mxCell id="layer2_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="80" y="320" width="300" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="layer2_title" value="姿态解算层" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#e65100;" vertex="1" parent="1">
+          <mxGeometry x="95" y="330" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- joycon-robotics Module -->
+        <mxCell id="joycon_robotics" value="&lt;b&gt;joycon-robotics 库&lt;/b&gt;&lt;br&gt;&lt;br&gt;📁 joyconrobotics.py&lt;br&gt;🔧 class JoyconRobotics&lt;br&gt;&lt;br&gt;核心功能:&lt;br&gt;• get_control() → pose, gripper, button&lt;br&gt;• reset_joycon() 校准&lt;br&gt;• set_posture_limits() 工作空间&lt;br&gt;&lt;br&gt;输出格式:&lt;br&gt;pose: [x, y, z, roll, pitch, yaw]&lt;br&gt;gripper: 0.0~1.0&lt;br&gt;button: -1/0/1/8" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ff9800;strokeColor=#e65100;strokeWidth=2;fontColor=#ffffff;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="370" width="260" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- Attitude Estimator -->
+        <mxCell id="attitude_est" value="&lt;b&gt;AttitudeEstimator&lt;/b&gt;&lt;br&gt;&lt;br&gt;📁 gyro.py&lt;br&gt;🔧 update(gyro, accel)&lt;br&gt;&lt;br&gt;• 互补滤波 (α=0.55)&lt;br&gt;• 低通滤波 (α=0.05)&lt;br&gt;• Yaw漂移补偿&lt;br&gt;• 欧拉角输出" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffb74d;strokeColor=#f57c00;strokeWidth=1.5;fontColor=#1a1a1a;align=left;verticalAlign=top;spacing=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="110" y="450" width="120" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Button Handler -->
+        <mxCell id="button_handler" value="&lt;b&gt;ButtonEventJoyCon&lt;/b&gt;&lt;br&gt;&lt;br&gt;📁 event.py&lt;br&gt;🔧 events()&lt;br&gt;&lt;br&gt;• A键: 删除录制&lt;br&gt;• Y键: 保存轨迹&lt;br&gt;• Home: 复位&lt;br&gt;• ZR: 夹爪切换" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffb74d;strokeColor=#f57c00;strokeWidth=1.5;fontColor=#1a1a1a;align=left;verticalAlign=top;spacing=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="240" y="450" width="110" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Layer 3: ROS2 Adaptation Layer -->
+        <mxCell id="layer3_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#388e3c;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="450" y="100" width="350" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="layer3_title" value="ROS2 适配层" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1b5e20;" vertex="1" parent="1">
+          <mxGeometry x="465" y="110" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ROS2 Teleop Node -->
+        <mxCell id="ros2_teleop" value="&lt;b&gt;Joycon Teleop Node&lt;/b&gt;&lt;br&gt;&lt;br&gt;📁 joycon_teleop_node.py&lt;br&gt;🔧 class JoyconTeleopNode(Node)&lt;br&gt;&lt;br&gt;主要功能:&lt;br&gt;• timer_callback() @ 100Hz&lt;br&gt;• 坐标系转换 (Joycon → ROS)&lt;br&gt;• 工作空间限制检查&lt;br&gt;• 碰撞预测&lt;br&gt;&lt;br&gt;发布话题:&lt;br&gt;/target_pose (PoseStamped)&lt;br&gt;/gripper_command (Float64)&lt;br&gt;&lt;br&gt;订阅话题:&lt;br&gt;/joint_states (JointState)&lt;br&gt;/planning_scene (PlanningScene)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66bb6a;strokeColor=#2e7d32;strokeWidth=2;fontColor=#ffffff;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="150" width="310" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Configuration Manager -->
+        <mxCell id="config_mgr" value="&lt;b&gt;Configuration Manager&lt;/b&gt;&lt;br&gt;&lt;br&gt;📁 parol6_config.yaml&lt;br&gt;&lt;br&gt;Parol6 参数:&lt;br&gt;workspace: [0.05~0.40, -0.35~0.35, 0.05~0.50]&lt;br&gt;init_pose: [0.25, 0.0, 0.2, 0, 0, 0]&lt;br&gt;dof_speed: [1.0, 1.0, 1.0, 1.2, 1.2, 1.5]&lt;br&gt;gripper: open=1.0, close=0.0&lt;br&gt;&lt;br&gt;Joycon 映射:&lt;br&gt;euler_reverse: [1, -1, 1]&lt;br&gt;direction_reverse: [-1, 1, 1]&lt;br&gt;offset_euler_rad: [0, -π, 0]&lt;br&gt;pitch_down_double: False&lt;br&gt;pure_xz: False" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#81c784;strokeColor=#388e3c;strokeWidth=1.5;fontColor=#1a1a1a;align=left;verticalAlign=top;spacing=8;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="370" width="310" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- Layer 4: Motion Planning Layer -->
+        <mxCell id="layer4_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="870" y="100" width="330" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="layer4_title" value="运动规划层" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#4a148c;" vertex="1" parent="1">
+          <mxGeometry x="885" y="110" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- MoveIt2 Module -->
+        <mxCell id="moveit2" value="&lt;b&gt;MoveIt2 Motion Planning&lt;/b&gt;&lt;br&gt;&lt;br&gt;📦 move_group节点&lt;br&gt;📁 parol6_moveit_config&lt;br&gt;&lt;br&gt;核心功能:&lt;br&gt;• 逆运动学求解 (KDL/TRAC-IK)&lt;br&gt;• 路径规划 (RRT/OMPL)&lt;br&gt;• 碰撞检测 (FCL)&lt;br&gt;• 轨迹优化 (Time Parameterization)&lt;br&gt;&lt;br&gt;配置参数:&lt;br&gt;planning_group: parol6_arm&lt;br&gt;end_effector_link: tool0&lt;br&gt;max_velocity_scaling: 0.3&lt;br&gt;max_acceleration_scaling: 0.3&lt;br&gt;planning_time: 5.0s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ab47bc;strokeColor=#6a1b9a;strokeWidth=2;fontColor=#ffffff;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="890" y="150" width="290" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- Layer 5: Robot Control Layer -->
+        <mxCell id="layer5_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#c2185b;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="870" y="420" width="330" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="layer5_title" value="机器人控制层" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#880e4f;" vertex="1" parent="1">
+          <mxGeometry x="885" y="430" width="150" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Parol6 Driver -->
+        <mxCell id="parol6_driver" value="&lt;b&gt;Parol6 Driver Node&lt;/b&gt;&lt;br&gt;&lt;br&gt;📁 parol6_driver.py&lt;br&gt;🔌 通讯: USB (STM32F446)&lt;br&gt;&lt;br&gt;核心功能:&lt;br&gt;• 关节轨迹跟踪&lt;br&gt;• 实时位置反馈&lt;br&gt;• 电机速度/加速度控制&lt;br&gt;• 急停保护&lt;br&gt;&lt;br&gt;订阅话题:&lt;br&gt;/joint_trajectory (JointTrajectory)&lt;br&gt;&lt;br&gt;发布话题:&lt;br&gt;/joint_states (JointState)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ec407a;strokeColor=#ad1457;strokeWidth=2;fontColor=#ffffff;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="890" y="470" width="290" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Layer 6: Hardware Execution Layer -->
+        <mxCell id="layer6_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffebee;strokeColor=#d32f2f;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="100" width="280" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="layer6_title" value="硬件执行层" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#b71c1c;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="110" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Parol6 Robot -->
+        <mxCell id="parol6_robot" value="&lt;b&gt;Parol6 机械臂&lt;/b&gt;&lt;br&gt;&lt;br&gt;⚙️ 6轴自由度&lt;br&gt;📏 工作半径: 400mm&lt;br&gt;🏋️ 负载: 1kg&lt;br&gt;🎯 重复精度: 0.08mm&lt;br&gt;⚖️ 重量: 6kg&lt;br&gt;&lt;br&gt;硬件配置:&lt;br&gt;• 步进电机 x6&lt;br&gt;• 行星减速器/皮带传动&lt;br&gt;• STM32F446 控制器&lt;br&gt;• USB 通讯接口&lt;br&gt;&lt;br&gt;末端执行器:&lt;br&gt;• 夹爪 (可选配)&lt;br&gt;• 快换接口" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ef5350;strokeColor=#c62828;strokeWidth=2;fontColor=#ffffff;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="150" width="240" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- Layer 7: Data Collection Layer -->
+        <mxCell id="layer7_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#f9a825;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="450" y="660" width="750" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="layer7_title" value="数据采集层" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#f57f17;" vertex="1" parent="1">
+          <mxGeometry x="465" y="670" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Trajectory Recorder -->
+        <mxCell id="trajectory_recorder" value="&lt;b&gt;Trajectory Recorder&lt;/b&gt;&lt;br&gt;&lt;br&gt;📁 trajectory_recorder.py&lt;br&gt;🔧 class TrajectoryRecorder&lt;br&gt;&lt;br&gt;功能:&lt;br&gt;• record_step() 记录时间步&lt;br&gt;• save_episode() 保存轨迹&lt;br&gt;• start_new_episode() 开始新轨迹&lt;br&gt;&lt;br&gt;数据格式 (HDF5):&lt;br&gt;observations: [joint_pos, joint_vel, ee_pose]&lt;br&gt;actions: [target_joint_pos]&lt;br&gt;gripper: [gripper_state]&lt;br&gt;timestamps: [time_ns]&lt;br&gt;&lt;br&gt;采集频率: 100Hz" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffeb3b;strokeColor=#f9a825;strokeWidth=2;fontColor=#1a1a1a;align=left;verticalAlign=top;spacing=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="470" y="710" width="250" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Camera Module -->
+        <mxCell id="camera_module" value="&lt;b&gt;Camera Module&lt;/b&gt;&lt;br&gt;&lt;br&gt;📁 camera_node.py&lt;br&gt;🔧 cv2.VideoCapture&lt;br&gt;&lt;br&gt;功能:&lt;br&gt;• RGB图像采集&lt;br&gt;• 深度图采集 (可选)&lt;br&gt;• 相机标定&lt;br&gt;&lt;br&gt;发布话题:&lt;br&gt;/camera/image_raw&lt;br&gt;/camera/depth&lt;br&gt;&lt;br&gt;格式: sensor_msgs/Image" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffeb3b;strokeColor=#f9a825;strokeWidth=2;fontColor=#1a1a1a;align=left;verticalAlign=top;spacing=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="750" y="710" width="200" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Dataset Manager -->
+        <mxCell id="dataset_manager" value="&lt;b&gt;Dataset Manager&lt;/b&gt;&lt;br&gt;&lt;br&gt;📁 dataset_manager.py&lt;br&gt;&lt;br&gt;功能:&lt;br&gt;• 数据集组织&lt;br&gt;• 自动编号&lt;br&gt;• 数据验证&lt;br&gt;• 元数据生成&lt;br&gt;&lt;br&gt;输出结构:&lt;br&gt;dataset/&lt;br&gt;  ├─ episode_000.hdf5&lt;br&gt;  ├─ episode_001.hdf5&lt;br&gt;  └─ metadata.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffeb3b;strokeColor=#f9a825;strokeWidth=2;fontColor=#1a1a1a;align=left;verticalAlign=top;spacing=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="980" y="710" width="200" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Connections Layer 1 to Layer 2 -->
+        <mxCell id="conn1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1976d2;strokeWidth=3;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="joycon_hw" target="joycon_robotics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn1_label" value="蓝牙数据流&lt;br&gt;IMU + Buttons" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontColor=#0d47a1;labelBackgroundColor=#f5f5f5;fontStyle=1" vertex="1" connectable="0" parent="conn1">
+          <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+            <mxPoint x="2" y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Connections Layer 2 to Layer 3 -->
+        <mxCell id="conn2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ff9800;strokeWidth=3;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="joycon_robotics" target="ros2_teleop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn2_label" value="6DOF Pose&lt;br&gt;[x,y,z,r,p,y]&lt;br&gt;gripper, button" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontColor=#e65100;labelBackgroundColor=#f5f5f5;fontStyle=1" vertex="1" connectable="0" parent="conn2">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="1" y="-20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Connections Layer 3 to Layer 4 -->
+        <mxCell id="conn3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#66bb6a;strokeWidth=3;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="ros2_teleop" target="moveit2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn3_label" value="ROS2 Topic&lt;br&gt;/target_pose&lt;br&gt;(PoseStamped)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontColor=#2e7d32;labelBackgroundColor=#f5f5f5;fontStyle=1" vertex="1" connectable="0" parent="conn3">
+          <mxGeometry x="-0.15" y="2" relative="1" as="geometry">
+            <mxPoint x="2" y="-18" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Connections Layer 4 to Layer 5 -->
+        <mxCell id="conn4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ab47bc;strokeWidth=3;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="moveit2" target="parol6_driver">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn4_label" value="Joint Trajectory&lt;br&gt;/joint_trajectory" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontColor=#6a1b9a;labelBackgroundColor=#f5f5f5;fontStyle=1" vertex="1" connectable="0" parent="conn4">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="1" y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Connections Layer 5 to Layer 6 -->
+        <mxCell id="conn5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ec407a;strokeWidth=3;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="parol6_driver" target="parol6_robot">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn5_label" value="USB Serial&lt;br&gt;Motor Commands" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontColor=#ad1457;labelBackgroundColor=#f5f5f5;fontStyle=1" vertex="1" connectable="0" parent="conn5">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="1" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Feedback Connection Layer 6 to Layer 5 -->
+        <mxCell id="conn6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#f48fb1;strokeWidth=2;dashed=1;exitX=0;exitY=0.7;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="parol6_robot" target="parol6_driver">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn6_label" value="Joint States&lt;br&gt;Position Feedback" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#c2185b;labelBackgroundColor=#f5f5f5;" vertex="1" connectable="0" parent="conn6">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="1" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Data Collection Connections -->
+        <mxCell id="conn7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#fbc02d;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;dashed=1;" edge="1" parent="1" source="ros2_teleop" target="trajectory_recorder">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn7_label" value="Control Data" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#f57f17;labelBackgroundColor=#f5f5f5;" vertex="1" connectable="0" parent="conn7">
+          <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+            <mxPoint x="-10" y="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#fbc02d;strokeWidth=2;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" edge="1" parent="1" source="parol6_driver" target="trajectory_recorder">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="977" y="640" />
+              <mxPoint x="595" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn8_label" value="Robot States" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#f57f17;labelBackgroundColor=#f5f5f5;" vertex="1" connectable="0" parent="conn8">
+          <mxGeometry x="-0.4" y="1" relative="1" as="geometry">
+            <mxPoint x="-20" y="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eceff1;strokeColor=#37474f;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="80" y="660" width="300" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="legend_title" value="图例说明" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#263238;" vertex="1" parent="1">
+          <mxGeometry x="95" y="670" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend_content" value="&lt;b&gt;配色方案:&lt;/b&gt;&lt;br&gt;🔵 蓝色 - 硬件输入层&lt;br&gt;🟠 橙色 - 姿态解算层&lt;br&gt;🟢 绿色 - ROS2适配层&lt;br&gt;🟣 紫色 - 运动规划层&lt;br&gt;🔴 粉红 - 控制执行层&lt;br&gt;🔴 红色 - 硬件执行层&lt;br&gt;🟡 黄色 - 数据采集层&lt;br&gt;&lt;br&gt;&lt;b&gt;线条类型:&lt;/b&gt;&lt;br&gt;━━━ 实线: 实时控制流&lt;br&gt;┄┄┄ 虚线: 数据采集流&lt;br&gt;&lt;br&gt;&lt;b&gt;更新频率:&lt;/b&gt;&lt;br&gt;全链路 100Hz 实时更新" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#263238;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="100" y="710" width="260" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Info Box -->
+        <mxCell id="info_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2f1;strokeColor=#00695c;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="420" width="280" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="info_title" value="系统性能指标" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#004d40;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="430" width="150" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="info_content" value="&lt;b&gt;控制性能:&lt;/b&gt;&lt;br&gt;• 端到端延迟: &amp;lt;50ms&lt;br&gt;• 控制频率: 100Hz&lt;br&gt;• 位置精度: 0.08mm (Parol6限制)&lt;br&gt;&lt;br&gt;&lt;b&gt;数据采集能力:&lt;/b&gt;&lt;br&gt;• 采集频率: 100Hz&lt;br&gt;• 单轨迹时长: 数分钟&lt;br&gt;• 日采集量: 50-100条轨迹&lt;br&gt;&lt;br&gt;&lt;b&gt;系统要求:&lt;/b&gt;&lt;br&gt;• Ubuntu 22.04 + ROS2 Humble&lt;br&gt;• 蓝牙适配器 (Bluetooth 4.0+)&lt;br&gt;• USB接口 (Parol6通讯)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#004d40;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="470" width="250" height="115" as="geometry" />
+        </mxCell>
+
+        <!-- Additional Notes -->
+        <mxCell id="notes_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#ff6f00;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="660" width="280" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_title" value="开发建议" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#e65100;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="670" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="notes_content" value="&lt;b&gt;开发阶段:&lt;/b&gt;&lt;br&gt;Week 1-2: 基础遥操作&lt;br&gt;Week 3-4: 完整6DOF控制&lt;br&gt;Week 5-6: 数据采集流程&lt;br&gt;Week 7-8: 高级功能&lt;br&gt;Week 9+: 模仿学习&lt;br&gt;&lt;br&gt;&lt;b&gt;安全建议:&lt;/b&gt;&lt;br&gt;• 从 max_velocity=0.1 开始&lt;br&gt;• 启用 MoveIt2 碰撞检测&lt;br&gt;• 设置软限位保护&lt;br&gt;• 准备急停按钮&lt;br&gt;&lt;br&gt;&lt;b&gt;参考资源:&lt;/b&gt;&lt;br&gt;• QQ群: 948755626&lt;br&gt;• B站: @盒子桥智能&lt;br&gt;• GitHub: box2ai-robotics" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#e65100;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="710" width="250" height="175" as="geometry" />
+        </mxCell>
+
+        <!-- Camera Connection -->
+        <mxCell id="conn9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#fbc02d;strokeWidth=2;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" edge="1" parent="1" target="camera_module">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1035" y="580" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="1035" y="640" />
+              <mxPoint x="850" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn9_label" value="Image Stream" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#f57f17;labelBackgroundColor=#f5f5f5;" vertex="1" connectable="0" parent="conn9">
+          <mxGeometry x="-0.3" y="1" relative="1" as="geometry">
+            <mxPoint x="15" y="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Dataset connections -->
+        <mxCell id="conn10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#fbc02d;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="trajectory_recorder" target="dataset_manager">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn10_label" value="Save Episodes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#f57f17;labelBackgroundColor=#f5f5f5;" vertex="1" connectable="0" parent="conn10">
+          <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+            <mxPoint y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#fbc02d;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="camera_module" target="dataset_manager">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn11_label" value="Image Data" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#f57f17;labelBackgroundColor=#f5f5f5;" vertex="1" connectable="0" parent="conn11">
+          <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+            <mxPoint y="8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
